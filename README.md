@@ -2,10 +2,6 @@
 
 Serverless AWS automation that starts or stops selected EC2 instances through scheduled or manual events. The project uses AWS Lambda, Python/Boto3, IAM, CloudWatch Logs, and EventBridge Scheduler, with tag-based access controls and cost-conscious cleanup.
 
-> Public repository note: the IAM and Scheduler JSON files use `ACCOUNT_ID`
-> placeholders. Replace them only in your private deployment copy. Never commit
-> AWS credentials or private account configuration.
-
 ## Project Summary
 
 This project automates a common Cloud Operations task: controlling EC2 instance state without manually signing in to the AWS console. EventBridge Scheduler sends a JSON event to Lambda, the Lambda function reads the requested action, and Boto3 calls the EC2 API. IAM policies limit each component to the permissions it needs.
@@ -211,9 +207,7 @@ The corrected EventBridge schedule invoked Lambda, Lambda read `{"action":"start
 
 ## Verification Evidence
 
-Add these representative screenshots to the `screenshots/` directory after
-cropping or hiding account IDs, full ARNs, public IP addresses, and other
-sensitive values:
+The following screenshots document the project's verification steps:
 
 | Screenshot | Evidence |
 |---|---|
@@ -222,6 +216,18 @@ sensitive values:
 | `16-eventbridge-final-schedule-created.png` | Corrected final schedule ARN |
 | `17-eventbridge-automatic-start-running.png` | EC2 automatically changed to `running` |
 | `18-final-ec2-stopped-cleanup.png` | Final stopped state after cleanup |
+### Screenshot Gallery
+**Initial EventBridge schedule creation**
+![Initial EventBridge schedule creation](screenshots/14-eventbridge-start-schedule-created-cli.png)
+**Scheduler-triggered Lambda logs**
+![Scheduler-triggered Lambda logs](screenshots/15-eventbridge-scheduler-cloudwatch-invocations.png)
+**Corrected final schedule**
+![Corrected final schedule](screenshots/16-eventbridge-final-schedule-created.png)
+**EC2 automatically changed to running**
+![EC2 automatically changed to running](screenshots/17-eventbridge-automatic-start-running.png)
+**Final stopped state after cleanup**
+![Final stopped state after cleanup](screenshots/18-final-ec2-stopped-cleanup.png)
+
 
 ## Cleanup and Cost Control
 
@@ -249,10 +255,6 @@ response.json
 - Linux/WSL and AWS CLI workflows
 - Deployment package management
 - Operational cleanup, documentation, and cost awareness
-
-## Interview Summary
-
-> I built a serverless system that starts or stops selected EC2 instances using EventBridge Scheduler, Lambda, Python, and Boto3. I created separate least-privilege IAM roles, restricted EC2 control to tagged resources, and verified execution through CloudWatch Logs. During testing, Scheduler invoked Lambda but EC2 did not start. I compared the source code with the deployed ZIP and found that the deployed handler ignored the event payload. I corrected the event-handling logic, rebuilt and redeployed the package, and verified the complete scheduled workflow. Finally, I deleted the test schedule and stopped the instance to control costs.
 
 ## Future Improvements
 
